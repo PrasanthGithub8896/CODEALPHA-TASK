@@ -1,1 +1,134 @@
 
+import random
+
+def display_hangman(attempts):
+    stages = [
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+          / \\  |
+               |
+        =========
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+          /    |
+               |
+        =========
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|\\  |
+               |
+               |
+        =========
+        """,
+        """
+           -----
+           |   |
+           O   |
+          /|   |
+               |
+               |
+        =========
+        """,
+        """
+           -----
+           |   |
+           O   |
+           |   |
+               |
+               |
+        =========
+        """,
+        """
+           -----
+           |   |
+           O   |
+               |
+               |
+               |
+        =========
+        """,
+        """
+           -----
+           |   |
+               |
+               |
+               |
+               |
+        =========
+        """
+    ]
+    return stages[attempts]
+
+
+def hangman():
+    # List of words with hints
+    words_with_hints = {
+        'python': 'A popular programming language.',
+        'hangman': 'The name of this game.',
+        'developer': 'Someone who writes code.',
+        'portfolio': 'A collection of projects or investments.',
+        'automation': 'The use of technology to reduce human effort.'
+    }
+
+    word, hint = random.choice(list(words_with_hints.items()))
+    guessed_word = ['_'] * len(word)
+    guessed_letters = set()
+    attempts = 6
+
+    print("Welcome to Hangman!")
+    print(f"Hint: {hint}")
+    print(display_hangman(attempts))
+    print("Word to guess: ", " ".join(guessed_word))
+
+    while attempts > 0 and '_' in guessed_word:
+        # Display the current state
+        print("\nGuessed letters:", ", ".join(sorted(guessed_letters)))
+        print(f"Remaining attempts: {attempts}")
+        print("Current word: ", " ".join(guessed_word))
+        
+        # Player's guess
+        guess = input("Guess a letter: ").lower()
+
+        # Validate the input
+        if not guess.isalpha() or len(guess) != 1:
+            print("Please enter a single alphabetical character.")
+            continue
+
+        if guess in guessed_letters:
+            print(f"You've already guessed '{guess}'. Try a different letter.")
+            continue
+
+        guessed_letters.add(guess)
+
+        # Check if the guess is correct
+        if guess in word:
+            for index, letter in enumerate(word):
+                if letter == guess:
+                    guessed_word[index] = guess
+            print("Correct guess!")
+        else:
+            attempts -= 1
+            print(f"Wrong guess! The letter '{guess}' is not in the word.")
+        
+        # Display updated hangman structure
+        print(display_hangman(attempts))
+
+    # Game over conditions
+    if '_' not in guessed_word:
+        print(f"\nCongratulations! You guessed the word: {word}")
+    else:
+        print(f"\nGame over! The word was: {word}")
+
+# Run the Hangman game
+if __name__ == "__main__":
+    hangman()
