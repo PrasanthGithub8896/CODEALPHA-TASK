@@ -1,0 +1,81 @@
+#simple python code
+
+import yfinance as yf
+
+# Initialize an empty portfolio
+portfolio = []
+
+def add_stock():
+    """Add a stock to the portfolio."""
+    symbol = input("Enter the stock symbol: ").upper()
+    try:
+        quantity = int(input("Enter the quantity: "))
+    except ValueError:
+        print("Invalid quantity. Please enter a number.")
+        return
+
+    portfolio.append({'symbol': symbol, 'quantity': quantity})
+    print(f"{symbol} added to your portfolio.")
+
+def view_portfolio():
+    """View the current portfolio with stock details."""
+    if not portfolio:
+        print("Your portfolio is empty.")
+        return
+
+    total_value = 0
+    print("\nPortfolio:")
+    print(f"{'Symbol':<10}{'Quantity':<10}{'Price':<10}{'Value':<10}")
+    print("-" * 40)
+
+    for stock in portfolio:
+        symbol = stock['symbol']
+        quantity = stock['quantity']
+
+        # Fetch stock price
+        stock_data = yf.Ticker(symbol)
+        price = stock_data.info.get('regularMarketPrice', None)
+        
+        if price is None:
+            print(f"Unable to fetch data for {symbol}.")
+            continue
+
+        value = price * quantity
+        total_value += value
+
+        print(f"{symbol:<10}{quantity:<10}{price:<10.2f}{value:<10.2f}")
+
+    print("-" * 40)
+    print(f"Total Portfolio Value: ₹{total_value:.2f}\n")
+
+def remove_stock():
+    """Remove a stock from the portfolio."""
+    symbol = input("Enter the stock symbol to remove: ").upper()
+    global portfolio
+    portfolio = [stock for stock in portfolio if stock['symbol'] != symbol]
+    print(f"{symbol} removed from your portfolio.")
+
+def main():
+    """Main function to interact with the portfolio tracker."""
+    while True:
+        print("\nStock Portfolio Tracker")
+        print("1. Add Stock")
+        print("2. View Portfolio")
+        print("3. Remove Stock")
+        print("4. Exit")
+
+        choice = input("Enter your choice: ")
+        if choice == '1':
+            add_stock()
+        elif choice == '2':
+            view_portfolio()
+        elif choice == '3':
+            remove_stock()
+        elif choice == '4':
+            print("Exiting... Thank you for using the tracker!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
